@@ -1,46 +1,119 @@
-# 🌤️ Pipeline Météo – Projet ETL
+Projet ActiVR - Gestion et Analyse des Données Utilisateurs
+Contexte
+ActiVR souhaite exploiter les données de ses utilisateurs et événements pour des campagnes marketing ciblées et analyser la performance de ses jeux et activités.
 
-Ce projet met en place un pipeline automatisé qui récupère quotidiennement des données météorologiques pour plusieurs villes françaises, les nettoie, puis les stocke dans une base **PostgreSQL**. Le pipeline est orchestré via **Apache Airflow**.
+Les données brutes collectées peuvent contenir des erreurs, des valeurs manquantes ou incohérences. Ce projet vise à :
 
-###  Objectifs
-Fournir des données météo fiables pour :
-- Anticiper les retards logistiques liés aux conditions climatiques
-- Alimenter les analyses des data scientists/analystes métier
+Ingestion des données brutes (raw) dans des tables dédiées,
 
+Nettoyage des données pour obtenir des tables propres (clean),
 
-## Technologies utilisées
+Calcul d’indicateurs clés grâce à des requêtes SQL avancées (CTE, fonctions fenêtres...),
 
-- **Python** : développement et orchestration
-- **Pandas** : nettoyage et transformation des données
-- **PostgreSQL** : stockage des données transformées
-- **Airflow** : planification et orchestration ETL
-- **API Open-Meteo** : source de données météo
-- **SQL** : gestion des tables et insertion
+Organisation modulaire avec scripts SQL pour chaque étape.
 
+Arborescence du projet
+bash
+Copier
+Modifier
+.
+├── README.md
+├── .env                       # Configuration de la base de données
+├── run_ddl_raw.sh             # Script pour créer les tables raw
+├── run_ddl_clean.sh           # Script pour créer les tables clean
+├── run_dml_raw.sh             # Script pour charger les données dans raw
+├── run_dml_clean.sh           # Script pour créer et charger clean à partir de raw
+├── run_calcul.sh              # Script pour calculer et stocker les indicateurs
+├── ingestion
+│   ├── raw
+│   │   ├── ddl_users.sql
+│   │   ├── ddl_games.sql
+│   │   ├── ddl_events.sql
+│   │   ├── dml_users.sql      # Insert depuis CSV raw_users.csv
+│   │   ├── dml_games.sql
+│   │   ├── dml_events.sql
+│   │   └── raw_users.csv      # Données brutes utilisateurs
+│   │   └── raw_games.csv
+│   │   └── raw_events.csv
+│   └── clean
+│       ├── ddl_users.sql      # Création table clean.users (nettoyée)
+│       ├── ddl_games.sql
+│       ├── ddl_events.sql
+│       └── dml_users.sql      # Insert clean à partir de raw + nettoyage
+│       └── dml_games.sql
+│       └── dml_events.sql
+├── calcul
+│   ├── ddl_indicators.sql     # Création tables d’indicateurs
+│   ├── indicator_exposure.sql # Exposition utilisateurs par jour/semaine
+│   ├── indicator_activity.sql # Activité utilisateurs par type jeu
+│   └── indicator_performance.sql # Performance selon engagement et dates
+Configuration de la base de données
+Les paramètres de connexion à la base Postgres sont définis dans le fichier .env :
 
-## Lancer le projet
+env
+Copier
+Modifier
+DB_HOST=localhost
+DB_NAME=activr_db
+DB_USER=postgres
+DB_PASS=secret_password
+DB_PORT=5432
+Étapes d’exécution
+1. Création des tables raw (brutes)
+bash
+Copier
+Modifier
+./run_ddl_raw.sh
+Crée les tables brutes (raw.users, raw.games, raw.events).
 
-1. Cloner le dépôt :  
-   `git clone <url_du_repo>`
+2. Chargement des données dans raw
+bash
+Copier
+Modifier
+./run_dml_raw.sh
+Charge les données depuis les fichiers CSV dans les tables raw.
 
-2. Créer un environnement virtuel :  
-   `python -m venv venv && source venv/Scripts/activate` (Windows)  
-   ou `source venv/bin/activate` (Linux/Mac)
+3. Création des tables clean (nettoyées)
+bash
+Copier
+Modifier
+./run_ddl_clean.sh
+Crée les tables nettoyées (clean.users, etc.) avec les types et contraintes corrigés.
 
-3. Installer les dépendances :  
-   `pip install -r requirements.txt`
+4. Nettoyage des données et insertion dans clean
+bash
+Copier
+Modifier
+./run_dml_clean.sh
+Transforme les données depuis raw, remplace valeurs manquantes, nettoie les erreurs, et insère dans clean.
 
-4. Configurer votre base PostgreSQL et exécuter le script dans `db/` pour créer la table.
+5. Calcul des indicateurs
+bash
+Copier
+Modifier
+./run_calcul.sh
+Exécute les scripts SQL pour générer les tables d’indicateurs, par exemple :
 
-5. Lancer Airflow (scheduler & webserver) et exécuter le DAG.
+Nombre d’utilisateurs actifs par jour, semaine, type de jeu
 
+Répartition des âges, fréquences d’activité
 
-## Commandes utiles
+Moyennes mobiles sur les participations
 
-```bash
-# Activer l'environnement virtuel
-source venv/Scripts/activate  # Windows
-source venv/bin/activate      # Unix
+Indicateurs avec fonctions fenêtres et CTE
 
-# Installer les dépendances
-pip install -r requirements.txt
+Nettoyage des données : règles principales
+age : doit être un entier positif. Les valeurs manquantes ou non numériques sont remplacées par la moyenne des âges valides.
+
+registration_date : doit être un date valide. Valeurs manquantes remplacées par 2024-01-01.
+
+email : valeurs manquantes remplacées par 'Unknown'.
+
+workout_frequency : valeurs manquantes remplacées par 'flexible'. Valeurs forcées en minuscules, uniquement parmi minimal, flexible, regular, maximal.
+
+Technologies utilisées
+PostgreSQL (SQL standard, fonctions fenêtres, CTE)
+
+Bash (scripts d’exécution)
+
+CSV (format d’import des données brutes)

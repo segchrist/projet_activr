@@ -1,16 +1,89 @@
-Projet ActiVR - Gestion et Analyse des Données Utilisateurs
-Contexte
-ActiVR souhaite exploiter les données de ses utilisateurs et événements pour des campagnes marketing ciblées et analyser la performance de ses jeux et activités.
+## Projet Data Pipeline & KPI
+Description du projet
+Ce projet consiste à construire un pipeline de données complet pour ingérer, nettoyer, enrichir et analyser les données issues d’une plateforme de jeux en ligne. L’objectif est de permettre un suivi précis des comportements utilisateurs et des performances des jeux à travers des indicateurs clés (KPIs), afin d’orienter les décisions business et améliorer l’expérience client.
 
-Les données brutes collectées peuvent contenir des erreurs, des valeurs manquantes ou incohérences. Ce projet vise à :
+Les données initiales sont collectées sous forme de fichiers CSV bruts (utilisateurs, événements, jeux). Ces données sont ensuite chargées dans une base PostgreSQL dans des tables raw. Un processus de nettoyage et d’enrichissement génère des tables clean où les données sont corrigées, complétées et normalisées. Enfin, un ensemble de tables KPI agrège ces informations selon différentes granularités (temps, utilisateur, jeu, localisation).
 
-Ingestion des données brutes (raw) dans des tables dédiées,
+L’ensemble des étapes est automatisé et orchestré via Apache Airflow, assurant une mise à jour régulière et fiable.
 
-Nettoyage des données pour obtenir des tables propres (clean),
+## KPIs à suivre
+Les principaux indicateurs calculés sont :
 
-Calcul d’indicateurs clés grâce à des requêtes SQL avancées (CTE, fonctions fenêtres...),
+- Statuts utilisateurs :
 
-Table users.csv
+Nombre d’utilisateurs actifs (événement dans les 6 derniers mois)
+
+Nombre d’utilisateurs churnés (étaient actifs mais ne le sont plus)
+
+Nombre d’utilisateurs inactifs (jamais été actifs)
+
+- Engagement utilisateur :
+
+Fréquence moyenne d’événements par utilisateur
+
+Durée moyenne d’utilisation par session
+
+Répartition des utilisateurs par tranche d’âge, genre, abonnement
+
+- Performance des jeux :
+
+Nombre total d’événements par jeu
+
+Durée moyenne des sessions par jeu
+
+Popularité des jeux par nombre d’utilisateurs actifs
+
+- Dimension temporelle :
+
+Agrégation mensuelle des KPIs pour suivre l’évolution dans le temps
+
+Identification des tendances saisonnières ou ponctuelles
+
+Dimension géographique (localisation) :
+
+Répartition des utilisateurs actifs par localisation
+
+Analyse des comportements utilisateurs selon la zone géographique
+
+## Mailles d’analyse
+
+Les KPIs sont calculés selon plusieurs granularités :
+
+Par utilisateur : suivi individuel des comportements et statuts
+
+Par mois : analyse temporelle pour détecter les évolutions
+
+Par jeu : mesure de la performance et popularité des jeux
+
+Par localisation : compréhension géographique des usages
+
+
+
+## Outils utilisés
+
+Python : génération des données brutes synthétiques
+
+PostgreSQL : stockage et traitement des données
+
+Apache Airflow : orchestration des pipelines ETL
+
+SQL : création, nettoyage, transformation et calcul des KPIs
+
+Bash : automatisation des imports et gestion des environnements
+
+## Fonctionnement résumé
+Génération des données brutes synthétiques
+
+Ingestion dans les tables raw
+
+Nettoyage et enrichissement vers les tables clean
+
+Calcul et mise à jour des tables KPI selon les différentes mailles
+
+Orchestration complète via Airflow pour automatisation et reprise sur erreur
+
+
+## Table users.csv
 
 user_id (entier, clé primaire) : identifiant unique utilisateur (exemple : 1, 2, 3...)
 
@@ -28,7 +101,7 @@ location (texte) : ville de résidence, valeurs : Paris, Lyon, Berlin, Madrid, R
 
 subscription_type (texte) : type d’abonnement, valeurs : free, premium, trial (avec variations de casse possibles)
 
-Table games.csv
+## Table games.csv
 
 game_id (entier, clé primaire) : identifiant unique du jeu (exemple : 100, 101, 102...)
 
@@ -40,7 +113,7 @@ platform (texte) : plateforme, valeurs : iOS, Android, Web, avec erreurs possibl
 
 difficulty (texte) : difficulté, valeurs : easy, medium, hard, avec erreurs possibles (ex : Medium, HARD, vide)
 
-Table events.csv
+## Table events.csv
 
 event_id (entier, clé primaire) : identifiant unique de l’événement (exemple : 1, 2, 3...)
 
@@ -55,113 +128,3 @@ event_type (texte) : type d’événement, valeurs : login, start_game, finish_g
 duration_seconds (texte) : durée en secondes, valeurs : 30, 60, 90, vide ou négatif (-10)
 
 device_type (texte) : type de dispositif, valeurs : mobile, web, console, avec erreurs possibles (tablet, MOBILE)
-
-
-Organisation modulaire avec scripts SQL pour chaque étape.
-
-Arborescence du projet
-bash
-Copier
-Modifier
-.
-├── README.md
-├── .env                       # Configuration de la base de données
-├── run_ddl_raw.sh             # Script pour créer les tables raw
-├── run_ddl_clean.sh           # Script pour créer les tables clean
-├── run_dml_raw.sh             # Script pour charger les données dans raw
-├── run_dml_clean.sh           # Script pour créer et charger clean à partir de raw
-├── run_calcul.sh              # Script pour calculer et stocker les indicateurs
-├── ingestion
-│   ├── raw
-│   │   ├── ddl_users.sql
-│   │   ├── ddl_games.sql
-│   │   ├── ddl_events.sql
-│   │   ├── dml_users.sql      # Insert depuis CSV raw_users.csv
-│   │   ├── dml_games.sql
-│   │   ├── dml_events.sql
-│   │   └── raw_users.csv      # Données brutes utilisateurs
-│   │   └── raw_games.csv
-│   │   └── raw_events.csv
-│   └── clean
-│       ├── ddl_users.sql      # Création table clean.users (nettoyée)
-│       ├── ddl_games.sql
-│       ├── ddl_events.sql
-│       └── dml_users.sql      # Insert clean à partir de raw + nettoyage
-│       └── dml_games.sql
-│       └── dml_events.sql
-├── calcul
-│   ├── ddl_indicators.sql     # Création tables d’indicateurs
-│   ├── indicator_exposure.sql # Exposition utilisateurs par jour/semaine
-│   ├── indicator_activity.sql # Activité utilisateurs par type jeu
-│   └── indicator_performance.sql # Performance selon engagement et dates
-Configuration de la base de données
-Les paramètres de connexion à la base Postgres sont définis dans le fichier .env :
-
-
-env
-Copier
-Modifier
-DB_HOST=localhost
-DB_NAME=activr_db
-DB_USER=postgres
-DB_PASS=secret_password
-DB_PORT=5432
-Étapes d’exécution
-1. Création des tables raw (brutes)
-bash
-Copier
-Modifier
-./run_ddl_raw.sh
-Crée les tables brutes (raw.users, raw.games, raw.events).
-
-2. Chargement des données dans raw
-bash
-Copier
-Modifier
-./run_dml_raw.sh
-Charge les données depuis les fichiers CSV dans les tables raw.
-
-3. Création des tables clean (nettoyées)
-bash
-Copier
-Modifier
-./run_ddl_clean.sh
-Crée les tables nettoyées (clean.users, etc.) avec les types et contraintes corrigés.
-
-4. Nettoyage des données et insertion dans clean
-bash
-Copier
-Modifier
-./run_dml_clean.sh
-Transforme les données depuis raw, remplace valeurs manquantes, nettoie les erreurs, et insère dans clean.
-
-5. Calcul des indicateurs
-bash
-Copier
-Modifier
-./run_calcul.sh
-Exécute les scripts SQL pour générer les tables d’indicateurs, par exemple :
-
-Nombre d’utilisateurs actifs par jour, semaine, type de jeu
-
-Répartition des âges, fréquences d’activité
-
-Moyennes mobiles sur les participations
-
-Indicateurs avec fonctions fenêtres et CTE
-
-Nettoyage des données : règles principales
-age : doit être un entier positif. Les valeurs manquantes ou non numériques sont remplacées par la moyenne des âges valides.
-
-registration_date : doit être un date valide. Valeurs manquantes remplacées par 2024-01-01.
-
-email : valeurs manquantes remplacées par 'Unknown'.
-
-workout_frequency : valeurs manquantes remplacées par 'flexible'. Valeurs forcées en minuscules, uniquement parmi minimal, flexible, regular, maximal.
-
-Technologies utilisées
-PostgreSQL (SQL standard, fonctions fenêtres, CTE)
-
-Bash (scripts d’exécution)
-
-CSV (format d’import des données brutes)

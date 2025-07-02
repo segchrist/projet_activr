@@ -10,6 +10,53 @@ Nettoyage des données pour obtenir des tables propres (clean),
 
 Calcul d’indicateurs clés grâce à des requêtes SQL avancées (CTE, fonctions fenêtres...),
 
+Table users.csv
+
+user_id (entier, clé primaire) : identifiant unique utilisateur (exemple : 1, 2, 3...)
+
+age_range (texte) : tranche d’âge, valeurs possibles : -18, 18-25, 26-35, 36-50, 50+ ou vide
+
+registration_date (texte) : date d’inscription au format ISO (ex : 2023-05-12)
+
+email (texte) : adresse email générée aléatoirement
+
+workout_frequency (texte) : fréquence d’entraînement, valeurs : flexible, minimal, regular, maximal (avec variations de casse possibles)
+
+gender (texte) : genre, valeurs : M, F, Other, ou vide
+
+location (texte) : ville de résidence, valeurs : Paris, Lyon, Berlin, Madrid, Rome, ou vide
+
+subscription_type (texte) : type d’abonnement, valeurs : free, premium, trial (avec variations de casse possibles)
+
+Table games.csv
+
+game_id (entier, clé primaire) : identifiant unique du jeu (exemple : 100, 101, 102...)
+
+game_type (texte) : type de jeu, valeurs : cardio, strategy, puzzle, arcade, action, avec erreurs possibles (ex : Actionn, vide, PuzZle)
+
+game_name (texte) : nom du jeu, généré aléatoirement (exemple : Dragon Quest)
+
+platform (texte) : plateforme, valeurs : iOS, Android, Web, avec erreurs possibles (ex : androiid, WEB, vide)
+
+difficulty (texte) : difficulté, valeurs : easy, medium, hard, avec erreurs possibles (ex : Medium, HARD, vide)
+
+Table events.csv
+
+event_id (entier, clé primaire) : identifiant unique de l’événement (exemple : 1, 2, 3...)
+
+game_id (entier, clé étrangère) : référence au jeu, valeurs valides ou erreurs (9999)
+
+user_id (entier, clé étrangère) : référence à l’utilisateur, valeurs valides ou erreurs (9999)
+
+event_time (texte) : date et heure au format ISO (exemple : 2024-06-15T14:23:01)
+
+event_type (texte) : type d’événement, valeurs : login, start_game, finish_game, purchase, avec erreurs possibles (Start_Game, vide)
+
+duration_seconds (texte) : durée en secondes, valeurs : 30, 60, 90, vide ou négatif (-10)
+
+device_type (texte) : type de dispositif, valeurs : mobile, web, console, avec erreurs possibles (tablet, MOBILE)
+
+
 Organisation modulaire avec scripts SQL pour chaque étape.
 
 Arborescence du projet
@@ -49,6 +96,7 @@ Modifier
 │   └── indicator_performance.sql # Performance selon engagement et dates
 Configuration de la base de données
 Les paramètres de connexion à la base Postgres sont définis dans le fichier .env :
+
 
 env
 Copier

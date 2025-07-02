@@ -1,6 +1,17 @@
 -- DROP si existe
 DROP TABLE IF EXISTS clean.games;
 
+CREATE TABLE clean.games(
+    game_id INTEGER PRIMARY KEY,
+    game_type VARCHAR(255),
+    game_name VARCHAR(255),
+    platform VARCHAR(255),
+    difficulty VARCHAR(255),
+    CONSTRAINT chk_difficulty CHECK(difficulty IN ('easy', 'medium', 'hard'))
+)
+
+
+
 -- Nettoyage et création table clean.games
 CREATE TABLE clean.games AS
 SELECT

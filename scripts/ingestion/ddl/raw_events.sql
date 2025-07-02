@@ -1,10 +1,11 @@
--- DROP si existe
-DROP TABLE IF EXISTS raw.events;
+DROP TABLE IF EXISTS raw.users;
 
-CREATE TABLE raw.events (
-    event_id SERIAL PRIMARY KEY,
+CREATE TABLE raw.users (
+    event_id INTEGER PRIMARY KEY,
     game_id INTEGER,
     user_id INTEGER,
-    device_id INTEGER,
-    event_time TEXT
-);
+    event_time TEXT,
+    event_type TEXT,
+    duration_seconds TEXT,
+    device_type TEXT
+    );

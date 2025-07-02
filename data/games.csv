@@ -1,21 +1,51 @@
-game_id,game_type
-1,running
-2,running
-3,yoga
-4,swimming
-5,yoga
-6,running
-7,yoga
-8,yoga
-9,running
-10,walking
-11,yoga
-12,walking
-13,yoga
-14,biking
-15,yoga
-16,biking
-17,walking
-18,yoga
-19,biking
-20,walking
+game_id,game_type,game_name,platform,difficulty
+100,,Hour Quest,iOS,
+101,puzzle,Into Quest,,hard
+102,strategy,Machine Quest,Android,HARD
+103,,Other Quest,androiid,medium
+104,arcade,Either Quest,iOS,easy
+105,action,Same Quest,WEB,
+106,,Draw Quest,androiid,Medium
+107,arcade,First Quest,Android,Medium
+108,Actionn,Return Quest,Android,hard
+109,arcade,Their Quest,,easy
+110,cardio,Thus Quest,,Medium
+111,cardio,Be Quest,Android,medium
+112,strategy,Ready Quest,iOS,HARD
+113,cardio,Toward Quest,WEB,HARD
+114,cardio,Rate Quest,Android,
+115,cardio,Song Quest,WEB,Medium
+116,arcade,Almost Quest,androiid,medium
+117,cardio,Better Quest,Android,HARD
+118,action,Into Quest,Android,
+119,Actionn,Hundred Quest,androiid,HARD
+120,Actionn,Huge Quest,Android,hard
+121,puzzle,Old Quest,,HARD
+122,arcade,Maybe Quest,WEB,hard
+123,action,Arrive Quest,iOS,HARD
+124,puzzle,Public Quest,,
+125,,Act Quest,androiid,Medium
+126,cardio,Scientist Quest,Web,
+127,,Congress Quest,androiid,hard
+128,,Beautiful Quest,WEB,medium
+129,action,Money Quest,WEB,medium
+130,PuzZle,Through Quest,Android,medium
+131,action,Leader Quest,,medium
+132,PuzZle,Quite Quest,iOS,HARD
+133,,Still Quest,WEB,HARD
+134,puzzle,Glass Quest,WEB,medium
+135,action,Others Quest,Android,hard
+136,strategy,Toward Quest,WEB,hard
+137,strategy,Beyond Quest,androiid,
+138,arcade,Want Quest,iOS,hard
+139,,News Quest,,HARD
+140,cardio,Wide Quest,iOS,medium
+141,arcade,And Quest,WEB,medium
+142,Actionn,Drug Quest,Web,easy
+143,arcade,Development Quest,Android,
+144,strategy,Wear Quest,,Medium
+145,arcade,Trip Quest,,HARD
+146,arcade,Role Quest,WEB,medium
+147,Actionn,Very Quest,Web,Medium
+148,PuzZle,Our Quest,androiid,
+149,Actionn,May Quest,Web,hard

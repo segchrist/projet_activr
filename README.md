@@ -1,5 +1,4 @@
 ## Projet Data Pipeline & KPI
-Description du projet
 Ce projet consiste à construire un pipeline de données complet pour ingérer, nettoyer, enrichir et analyser les données issues d’une plateforme de jeux en ligne. L’objectif est de permettre un suivi précis des comportements utilisateurs et des performances des jeux à travers des indicateurs clés (KPIs), afin d’orienter les décisions business et améliorer l’expérience client.
 
 Les données initiales sont collectées sous forme de fichiers CSV bruts (utilisateurs, événements, jeux). Ces données sont ensuite chargées dans une base PostgreSQL dans des tables raw. Un processus de nettoyage et d’enrichissement génère des tables clean où les données sont corrigées, complétées et normalisées. Enfin, un ensemble de tables KPI agrège ces informations selon différentes granularités (temps, utilisateur, jeu, localisation).
